@@ -192,9 +192,15 @@
                 }
             }
 
-            if (cursors.space.isDown && player.body.touching.down) {
-                player.setVelocityY(-370);
-            }
+
+            gameScene.input.once('pointerdown', function() {
+
+                if (player.body.touching.down) {
+                    console.log('From SceneA to SceneB');
+
+                    player.setVelocityY(-370);
+                }
+            }, this);
 
             // if (gameOver != true) {
             // console.log("Game Over");
