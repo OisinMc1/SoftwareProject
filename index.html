@@ -216,7 +216,7 @@
                 score++;
                 scoreText.setText('Score: ' + score);
                 scoreText.x = player.x - 100;
-                scoreText.y = 300;
+                scoreText.y = 200;
 
             }
 
@@ -264,7 +264,7 @@
         }
 
         gameScene.gameEnd = function() {
-            gameScene.add.image(player.x, 250, 'gameover');
+            gameScene.add.image(player.x, 400, 'gameover');
             player.setVelocityX(0);
             gameScene.scene.pause();
 
