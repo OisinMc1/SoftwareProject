@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>CA1</title>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <script type="text/javascript">
+        let gameScene = new Phaser.Scene('Game');
+
+        var config = {
+            type: Phaser.AUTO,
+            width: 990,
+            height: 560,
+            physics: {
+                default: 'arcade',
+                arcade: {
+                    gravity: {
+                        y: 600
+                    },
+                    debug: true
+                }
+            },
+            scene: gameScene
+        };
+
+
+        var platforms;
+        var back1;
+        var back2;
+        var floor;
+        var count = 0;
+        var gameOver = false;
+        var score = 0;
+        var score;
+        var scoreText;
+
+        var game = new Phaser.Game(config);
+
+        console.log(gameScene);
+
+        gameScene.preload = function() {
+            this.load.image('background', 'assets/background-2.png');
+            this.load.image('background2', 'assets/background-3.png');
+            this.load.image('platform', 'assets/platform.png');
+            this.load.image('floor', 'assets/floor.png');
+            this.load.image('player', 'assets/Enemy-1-1.png');
+            this.load.image('enemy2', 'assets/Enemy-2-2.png');
+            this.load.image('enemy3', 'assets/Enemy-3-2.png');
+            this.load.image('enemy4', 'assets/Enemy-4-2.png');
+            this.load.image('flag', 'assets/flag.png');
+            this.load.image('coin', 'assets/coin.png');
+            this.load.image('gameover', 'assets/gameover.png');
+            this.load.image('youwin', 'assets/youwin.png');
+            this.load.image('reset', 'assets/reset.png');
+
+        }
+
+
+        gameScene.create = function() {
+
+            back2 = this.add.tileSprite(750, 280, 15000, 700, 'background2');
+            back1 = this.add.tileSprite(750, 280, 15000, 700, 'background');
+
+
+
+
+
+            floor = this.physics.add.staticGroup();
+
+
+            floor.create(0, 590, 'floor').setScale(5, 2).refreshBody();
+            floor.create(1500, 590, 'floor').setScale(5, 2).refreshBody();
+            floor.create(3000, 590, 'floor').setScale(5, 2).refreshBody();
+            floor.create(4500, 590, 'floor').setScale(5, 2).refreshBody();
+            floor.create(6000, 590, 'floor').setScale(5, 2).refreshBody();
+            floor.create(7500, 590, 'floor').setScale(5, 2).refreshBody();
+            floor.create(9000, 590, 'floor').setScale(5, 2).refreshBody();
+
+
+            platforms = this.physics.add.staticGroup()
+
+            platforms.create(630, 550, 'platform').setScale(2).refreshBody();
+            platforms.create(870, 550, 'platform').setScale(2).refreshBody();
+
+            platforms.create(1300, 485, 'platform').setScale(2).refreshBody();
+
+            platforms.create(2250, 550, 'platform').setScale(4, 2).refreshBody();
+
+            platforms.create(3650, 525, 'platform').setScale(2).refreshBody();
+            platforms.create(3900, 485, 'platform').setScale(2).refreshBody();
+
+
+            platforms.create(4755, 485, 'platform').setScale(2).refreshBody();
+            platforms.create(5055, 400, 'platform').setScale(4, 2).refreshBody();
+            platforms.create(5255, 590, 'platform').setScale(4, 2).refreshBody();
+
+
+            platforms.create(6550, 525, 'platform').setScale(2).refreshBody();
+            platforms.create(6950, 525, 'platform').setScale(2).refreshBody();
+
+            coins = this.physics.add.staticGroup()
+
+            coins.create(1300, 445, 'coin').setScale(2).refreshBody();
+            coins.create(2190, 510, 'coin').setScale(2).refreshBody();
+            coins.create(2250, 510, 'coin').setScale(2).refreshBody();
+            coins.create(2310, 510, 'coin').setScale(2).refreshBody();
+            coins.create(3650, 485, 'coin').setScale(2).refreshBody();
+            coins.create(3900, 445, 'coin').setScale(2).refreshBody();
+            coins.create(4755, 445, 'coin').setScale(2).refreshBody();
+            coins.create(5055, 360, 'coin').setScale(2).refreshBody();
+            coins.create(5115, 360, 'coin').setScale(2).refreshBody();
+            coins.create(4995, 360, 'coin').setScale(2).refreshBody();
+            coins.create(5400, 270, 'coin').setScale(2).refreshBody();
+            coins.create(6750, 405, 'coin').setScale(2).refreshBody();
+            coins.create(6690, 405, 'coin').setScale(2).refreshBody();
+            coins.create(6810, 405, 'coin').setScale(2).refreshBody();
+
+
+
+
+            //        enemy1 = this.physics.add.staticGroup();
+            //        
+            //        enemy1.create(400, 340, 'enemy2').setScale(2).refreshBody();
+            //        enemy1.create(400, 340, 'enemy3').setScale(2).refreshBody();
+            //        enemy1.create(400, 340, 'enemy4').setScale(3).refreshBody();
+            player = this.physics.add.sprite(100, 450, 'player');
+            player.setScale(2);
+
+            player.setBounce(0.0);
+            //player.setCollideWorldBounds(true);
+            this.physics.add.collider(player, floor);
+            this.physics.add.collider(player, platforms);
+            this.physics.add.overlap(player, coins, gameScene.collectCoins, null, this);
+            cursors = this.input.keyboard.createCursorKeys();
+
+
+            enemy1 = this.physics.add.sprite(1600, 530, 'enemy2');
+            enemy1.setScale(1.8);
+            this.physics.add.collider(enemy1, floor);
+            this.physics.add.overlap(player, enemy1, gameScene.hitEnemy, null, this);
+
+
+            enemy2 = this.physics.add.sprite(3200, 500, 'enemy3');
+            enemy2.setScale(2);
+            this.physics.add.collider(enemy2, floor);
+            this.physics.add.collider(player, enemy2, gameScene.hitEnemy, null, this);
+            enemy2.body.allowGravity = false;
+
+            enemy3 = this.physics.add.sprite(4150, 530, 'enemy4');
+            enemy3.setScale(1.5);
+            this.physics.add.collider(enemy3, floor);
+            //this.physics.add.collider(player, enemy3, gameScene.hitEnemy, null, this);
+
+            flag = this.physics.add.sprite(7500, 530, 'flag');
+            flag.setScale(1.5);
+            this.physics.add.collider(flag, floor);
+            this.physics.add.collider(player, flag, gameScene.hitFlag, null, this);
+
+            scoreText = this.add.text(16, 86, 'score: 0', {
+                fontSize: '32px',
+                fill: '#000'
+            });
+
+
+        }
+
+        gameScene.update = function() {
+
+            player.setVelocityX(240);
+
+            if (player.x >= 1100) {
+                enemy1.setVelocityX(-90)
+            }
+
+            if (player.x >= 2600) {
+                enemy2.setVelocityX(-470)
+                if (enemy2.y <= 700) {
+                    enemy2.setVelocityY(70)
+                } else {
+                    enemy2.setVelocityY(-400)
+                }
+            }
+
+            if (cursors.space.isDown && player.body.touching.down) {
+                player.setVelocityY(-370);
+            }
+
+            // if (gameOver != true) {
+            // console.log("Game Over");
+            // } else {
+            // count++;
+            // }
+            //
+            // if (gameOver == true) {
+            // player.x = 0;
+            // }
+
+            if (player.x >= 0) {
+                score++;
+                scoreText.setText('Score: ' + score);
+                scoreText.x = player.x - 100;
+
+            }
+
+            if (player.y >= 700) {
+                gameScene.fallThrough()
+            }
+
+
+            this.cameras.main.setBounds(0, -480, 10000, 1080);
+            this.cameras.main.startFollow(player, true, 1, 1);
+        }
+
+        gameScene.hitEnemy = function(player, enemy) {
+
+            console.log("hit enemy");
+            this.physics.pause();
+            player.setTint(0xff0000);
+            score = score;
+            gameOver = true;
+            gameScene.gameEnd();
+
+        }
+
+        gameScene.fallThrough = function() {
+            gameOver = true;
+            gameScene.gameEnd();
+            console.log(player.x)
+        }
+
+        gameScene.hitFlag = function(player, flag) {
+
+            console.log("game over 2");
+            this.physics.pause();
+            score = score;
+            gameOver = true;
+            gameScene.youWin();
+
+        }
+
+        gameScene.collectCoins = function(player, coins) {
+
+            coins.disableBody(true, true);
+            score = score + 50;
+
+        }
+
+        gameScene.gameEnd = function() {
+            gameScene.add.image(player.x, 300, 'gameover');
+            player.setVelocityX(0);
+            gameScene.scene.pause();
+
+
+            this.input.on('pointerdown', function(pointer) {
+
+                gameScene.scene.resume('Game');
+                gameScene.scene.restart();
+
+            });
+        }
+
+        gameScene.youWin = function() {
+            gameScene.add.image(player.x, 300, 'youwin');
+            player.setVelocityX(0);
+            gameScene.scene.pause();
+
+
+            this.input.on('pointerdown', function(pointer) {
+
+                gameScene.scene.resume('Game');
+                gameScene.scene.restart();
+
+            });
+        }
+
+    </script>
+
+</body>
+
+</html>
