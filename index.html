@@ -34,6 +34,7 @@
             scene: gameScene
         };
 
+        //used variables
 
         var platforms;
         var back1;
@@ -49,7 +50,11 @@
 
         console.log(gameScene);
 
+        //preload function
         gameScene.preload = function() {
+
+            //images
+
             this.load.image('background', 'assets/background-2.png');
             this.load.image('background2', 'assets/background-3.png');
             this.load.image('platform', 'assets/platform.png');
@@ -64,20 +69,31 @@
             this.load.image('youwin', 'assets/youwin.png');
             this.load.image('reset', 'assets/reset.png');
 
+            //sound
+
+            this.load.audio('music', 'assets/music.mp3');
+            this.load.audio('death', 'assets/music2.wav');
+            this.load.audio('coin', 'assets/music3.wav');
         }
 
-
+        //create function
         gameScene.create = function() {
 
+
+            //background images
             back2 = this.add.tileSprite(750, 280, 15000, 700, 'background2');
             back1 = this.add.tileSprite(750, 280, 15000, 700, 'background');
 
+            //sound files
+            fx = this.sound.add('music');
+            fx2 = this.sound.add('death');
+            fx3 = this.sound.add('coin');
 
+            //background music
+            fx.play();
 
-
-
+            //floor groups
             floor = this.physics.add.staticGroup();
-
 
             floor.create(0, 590, 'floor').setScale(5, 2).refreshBody();
             floor.create(1500, 590, 'floor').setScale(5, 2).refreshBody();
@@ -87,28 +103,23 @@
             floor.create(7500, 590, 'floor').setScale(5, 2).refreshBody();
 
 
-            platforms = this.physics.add.staticGroup()
+            //playform group
+            platforms = this.physics.add.staticGroup();
 
             platforms.create(630, 550, 'platform').setScale(2).refreshBody();
             platforms.create(870, 550, 'platform').setScale(2).refreshBody();
-
             platforms.create(1300, 485, 'platform').setScale(2).refreshBody();
-
             platforms.create(2250, 550, 'platform').setScale(4, 2).refreshBody();
-
             platforms.create(3650, 525, 'platform').setScale(2).refreshBody();
             platforms.create(3900, 485, 'platform').setScale(2).refreshBody();
-
-
             platforms.create(4755, 485, 'platform').setScale(2).refreshBody();
             platforms.create(5055, 400, 'platform').setScale(4, 2).refreshBody();
             platforms.create(5255, 590, 'platform').setScale(4, 2).refreshBody();
-
-
             platforms.create(6550, 525, 'platform').setScale(2).refreshBody();
             platforms.create(6950, 525, 'platform').setScale(2).refreshBody();
 
-            coins = this.physics.add.staticGroup()
+            //coin groups
+            coins = this.physics.add.staticGroup();
 
             coins.create(1300, 445, 'coin').setScale(2).refreshBody();
             coins.create(2190, 510, 'coin').setScale(2).refreshBody();
@@ -128,55 +139,54 @@
 
 
 
-            //        enemy1 = this.physics.add.staticGroup();
-            //        
-            //        enemy1.create(400, 340, 'enemy2').setScale(2).refreshBody();
-            //        enemy1.create(400, 340, 'enemy3').setScale(2).refreshBody();
-            //        enemy1.create(400, 340, 'enemy4').setScale(3).refreshBody();
+            //playable character
             player = this.physics.add.sprite(100, 450, 'player');
-            player.setScale(2);
-
-            player.setBounce(0.0);
-            //player.setCollideWorldBounds(true);
-            this.physics.add.collider(player, floor);
-            this.physics.add.collider(player, platforms);
-            this.physics.add.overlap(player, coins, gameScene.collectCoins, null, this);
-            cursors = this.input.keyboard.createCursorKeys();
+            player.setScale(2); //sets size
+            this.physics.add.collider(player, floor); //collider with floor
+            this.physics.add.collider(player, platforms); //collider with platforms
+            this.physics.add.overlap(player, coins, gameScene.collectCoins, null, this); //interaction with coins
+            /*cursors = this.input.keyboard.createCursorKeys();*/ //original input
 
 
+            //enemy 1 properties
             enemy1 = this.physics.add.sprite(1600, 530, 'enemy2');
             enemy1.setScale(1.8);
             this.physics.add.collider(enemy1, floor);
-            this.physics.add.overlap(player, enemy1, gameScene.hitEnemy, null, this);
+            this.physics.add.overlap(player, enemy1, gameScene.hitEnemy, null, this); //sets interaction with player in the hitEnemy() function
 
-
+            //enemy 2 properties
             enemy2 = this.physics.add.sprite(3200, 500, 'enemy3');
             enemy2.setScale(2);
             this.physics.add.collider(enemy2, floor);
             this.physics.add.collider(player, enemy2, gameScene.hitEnemy, null, this);
-            enemy2.body.allowGravity = false;
+            enemy2.body.allowGravity = false; //allows enemy not to fall when the physics are enabled
 
+            //enemy 3 properties
             enemy3 = this.physics.add.sprite(4150, 530, 'enemy4');
             enemy3.setScale(1.5);
             this.physics.add.collider(enemy3, floor);
             this.physics.add.collider(player, enemy3, gameScene.hitEnemy, null, this);
 
+            //enemy 4 properties
             enemy4 = this.physics.add.sprite(7200, 470, 'enemy3');
             enemy4.setScale(1.5);
             this.physics.add.collider(enemy4, floor);
             this.physics.add.collider(player, enemy4, gameScene.hitEnemy, null, this);
             enemy4.body.allowGravity = false;
 
+            //enemy 5 properties
             enemy5 = this.physics.add.sprite(6200, 530, 'enemy2');
             enemy5.setScale(1.8);
             this.physics.add.collider(enemy5, floor);
             this.physics.add.overlap(player, enemy5, gameScene.hitEnemy, null, this);
 
+            //end flag properties
             flag = this.physics.add.sprite(7500, 530, 'flag');
             flag.setScale(1.5);
             this.physics.add.collider(flag, floor);
-            this.physics.add.collider(player, flag, gameScene.hitFlag, null, this);
+            this.physics.add.collider(player, flag, gameScene.hitFlag, null, this); //sets interaction with play in the hitFlag() function
 
+            //score counter original position
             scoreText = this.add.text(16, 86, 'score: 0', {
                 fontSize: '32px',
                 fill: '#000'
@@ -185,103 +195,107 @@
 
         }
 
+        //update function
         gameScene.update = function() {
 
-            player.setVelocityX(240);
+            //player movement
+            player.setVelocityX(240); //sideways movement
 
-            if (player.x >= 1100) {
-                enemy1.setVelocityX(-90)
-            }
+            //player jump function
+            gameScene.input.once('pointerdown', function() { //pointer down works for touchscreen & mouse
 
-            if (player.x >= 2600) {
-                enemy2.setVelocityX(-470)
-                if (enemy2.y <= 700) {
-                    enemy2.setVelocityY(70)
-                } else {
-                    enemy2.setVelocityY(-400)
-                }
-            }
-
-            if (player.x >= 6400) {
-                enemy4.setVelocityX(-470)
-            }
-
-            player.setVelocityX(240);
-
-            if (player.x >= 5400) {
-                enemy5.setVelocityX(-90)
-            }
-
-
-
-
-            gameScene.input.once('pointerdown', function() {
-
-                if (player.body.touching.down) {
-                    console.log('From SceneA to SceneB');
-
+                if (player.body.touching.down) { //prevents player from jumping while not on the ground
                     player.setVelocityY(-370);
                 }
             }, this);
 
-            // if (gameOver != true) {
-            // console.log("Game Over");
-            // } else {
-            // count++;
+            //enemy 1 movement
+            if (player.x >= 1100) {
+                enemy1.setVelocityX(-90) //sets horizontal enemy speed
+            }
+
+            //enemy2 movement
+            if (player.x >= 2600) {
+                enemy2.setVelocityX(-470)
+                if (enemy2.y <= 700) {
+                    enemy2.setVelocityY(70) //sets vertical enemy speed
+                } else {
+                    enemy2.setVelocityY(-400) //wanted it to dive down & come back up
+                }
+            }
+
+            //enemy4 movement as enemy3 doesnt move
+            if (player.x >= 6400) {
+                enemy4.setVelocityX(-470)
+            }
+
+            //enemy5 movement
+            if (player.x >= 5400) {
+                enemy5.setVelocityX(-90)
+            }
+
+            /*mute button attempt*/
+
+            // this.input.on('gameobjectdown', function(pointer, button) {
+            // if (button.name === 'pause') {
+            // if (fx.isPaused) {
+            // fx.resume();
+            // } else if (fx.isPlaying) {
+            // fx.pause();
             // }
-            //
-            // if (gameOver == true) {
-            // player.x = 0;
+            // }
             // }
 
+            //score counter movement & increase in score
             if (player.x >= 0) {
                 score++;
                 scoreText.setText('Score: ' + score);
-                scoreText.x = player.x - 100;
-                scoreText.y = 200;
+                scoreText.x = player.x - 100; //score x placement. It stays with the player as he moves
+                scoreText.y = 200; //score y placement
 
             }
 
-            if (player.y >= 700) {
-                gameScene.fallThrough()
+            //fallThrough
+            if (player.y >= 700) { //if the player is below a certain point
+                gameScene.fallThrough() //links to the fallThrough() function
             }
 
-
-            this.cameras.main.setBounds(0, -480, 10000, 1080);
-            this.cameras.main.startFollow(player, true, 1, 1);
+            //camera
+            this.cameras.main.setBounds(0, -480, 10000, 1080); //sets boundarys for the camera
+            this.cameras.main.startFollow(player, true, 1, 1); //allows the camera to follow the player
         }
 
+        //Enemy Collision function
         gameScene.hitEnemy = function(player, enemy) {
 
-            console.log("hit enemy");
-            this.physics.pause();
-            player.setTint(0xff0000);
-            score = score;
-            gameOver = true;
-            gameScene.gameEnd();
+            this.physics.pause(); //pauses the game
+            player.setTint(0xff0000); //tints the player for added effect
+            gameScene.gameEnd(); //links to gameEnd() function
 
         }
 
-        gameScene.fallThrough = function() {
-            gameOver = true;
-            gameScene.gameEnd();
-            console.log(player.x)
+        //Fall Through function
+        gameScene.fallThrough = function() { //When the player falls tto a certain point it will link to this function
+            gameScene.gameEnd(); //links to gameEnd() function
+            console.log(player.x) //to test that the function is being linked to
         }
 
+        //Flag Hit function
         gameScene.hitFlag = function(player, flag) {
 
-            console.log("game over 2");
-            this.physics.pause();
-            score = score;
+            this.physics.pause(); //pauses the game 
             gameOver = true;
             gameScene.youWin();
 
         }
 
+        //collect coin function
         gameScene.collectCoins = function(player, coins) {
 
             coins.disableBody(true, true);
             score = score + 50;
+            fx3.play();
+
 
         }
 
@@ -289,6 +303,8 @@
             gameScene.add.image(player.x, 400, 'gameover');
             player.setVelocityX(0);
             gameScene.scene.pause();
+            fx.pause();
+            fx2.play();
 
 
             this.input.on('pointerdown', function(pointer) {
