@@ -85,7 +85,6 @@
             floor.create(4500, 590, 'floor').setScale(5, 2).refreshBody();
             floor.create(6000, 590, 'floor').setScale(5, 2).refreshBody();
             floor.create(7500, 590, 'floor').setScale(5, 2).refreshBody();
-            floor.create(9000, 590, 'floor').setScale(5, 2).refreshBody();
 
 
             platforms = this.physics.add.staticGroup()
@@ -160,7 +159,18 @@
             enemy3 = this.physics.add.sprite(4150, 530, 'enemy4');
             enemy3.setScale(1.5);
             this.physics.add.collider(enemy3, floor);
-            //this.physics.add.collider(player, enemy3, gameScene.hitEnemy, null, this);
+            this.physics.add.collider(player, enemy3, gameScene.hitEnemy, null, this);
+
+            enemy4 = this.physics.add.sprite(7200, 470, 'enemy3');
+            enemy4.setScale(1.5);
+            this.physics.add.collider(enemy4, floor);
+            this.physics.add.collider(player, enemy4, gameScene.hitEnemy, null, this);
+            enemy4.body.allowGravity = false;
+
+            enemy5 = this.physics.add.sprite(6200, 530, 'enemy2');
+            enemy5.setScale(1.8);
+            this.physics.add.collider(enemy5, floor);
+            this.physics.add.overlap(player, enemy5, gameScene.hitEnemy, null, this);
 
             flag = this.physics.add.sprite(7500, 530, 'flag');
             flag.setScale(1.5);
@@ -191,6 +201,18 @@
                     enemy2.setVelocityY(-400)
                 }
             }
+
+            if (player.x >= 6400) {
+                enemy4.setVelocityX(-470)
+            }
+
+            player.setVelocityX(240);
+
+            if (player.x >= 5400) {
+                enemy5.setVelocityX(-90)
+            }
+
+
 
 
             gameScene.input.once('pointerdown', function() {
