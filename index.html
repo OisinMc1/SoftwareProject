@@ -263,7 +263,7 @@
         }
 
         gameScene.gameEnd = function() {
-            gameScene.add.image(player.x, 300, 'gameover');
+            gameScene.add.image(player.x, 250, 'gameover');
             player.setVelocityX(0);
             gameScene.scene.pause();
 
@@ -277,7 +277,7 @@
         }
 
         gameScene.youWin = function() {
-            gameScene.add.image(player.x, 300, 'youwin');
+            gameScene.add.image(player.x + 50, 250, 'youwin');
             player.setVelocityX(0);
             gameScene.scene.pause();
 
